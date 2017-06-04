@@ -67,7 +67,10 @@ def main():
 	
 		# words_list = quick_sort(word)
 
+
 	word_list = list(words_set)
+
+	print word_list
 
 	word_list.sort(key=len, reverse=True)
 
