@@ -35,6 +35,9 @@ def exists_in_anam(child):
 
 	child = sorted(child)
 
+	if(ANAGRAM_LETTERS_LENGTH < len(child)):
+		return False
+
 	# by sorting we save some time here, we avoid a nested loop
 	i = 0
 	for letter in child:
@@ -56,48 +59,56 @@ def exists_in_anam(child):
 
 # words_list = [line.rstrip('\n') for line in open(LIST_FILE_NAME)]
 
-# def recursion(words, length, build, pos, index):
-# 	# print str(pos) + "  " +str(length)
-
-# 	if (pos == length):
-# 		phrase = " ".join(build)
-# 		print phrase
-# 		if(len(phrase) == ANAGRAM_LENGTH):
-# 			if(exists_in_anam("".join(build))):
-# 				global L
-# 				L += 1
+def recursion(words, length, build, pos, index):
+	# print str(pos) + "  " +str(length)
+	if (pos == length):
+		phrase = " ".join(build)
+		if(len(phrase) == ANAGRAM_LENGTH):
+			if(exists_in_anam("".join(build))):
+				candid_hash = hashlib.md5(phrase).hexdigest()
+				if(candid_hash == HASH_EASY):
+					print "THIS IS easy => "+candid
+				elif(candid_hash == HASH_INTERMEDIATE):
+					print "THIS IS intermediate => "+candid
+				elif(candid_hash == HASH_HARD):
+					print "THIS IS very hard => "+candid
 				
-# 		return
 
-# 	for word in words[index:]:
-# 		build[pos] = word
-# 		recursion(words, length, build, pos+1, index+1)
+		return
+
+	for word in words[index:]:
+		build[pos] = word
+		recursion(words, length, build, pos+1, index+1)
 
 # def combos(word_bag, length):
 # 	init = [" "] * length
 # 	recursion(word_bag, length, init, 0, 0)
 
 
-def choose_iter(elements, length):
-    for i in xrange(len(elements)):
-        if length == 1:
-            yield (elements[i],)
-        else:
-            for next in choose_iter(elements[i+1:len(elements)], length-1):
-                yield (elements[i],) + next
-def choose2(l, k):
-    return list(choose_iter(l, k))
+def combinations(iterable, r):
+	i = 0
+	print "sth"
+	# combinations('ABCD', 2) --> AB AC AD BC BD CD
+	# combinations(range(4), 3) --> 012 013 023 123
+	pool = tuple(iterable)
+	n = len(pool)
+	if r > n:
+	    return
+	indices = range(r-1)
+	# print tuple(pool[i] for i in indices)
+	while True:
+	    for i in reversed(range(r)):
+	        if indices[i] != i + n - r:
+	            break
+	    else:
+	        return
+	    indices[i] += 1
+	    for j in range(i+1, r):
+	        indices[j] = indices[j-1] + 1
+	    # print list(pool[i] for i in indices)
+	    i += 1
+	    print i
 
-def choose(l, k):
-	maxi = len(l)
-	n = 0
-	for i, word in enumerate(l):
-		for j in range(i+1, maxi):
-			for k in range(j+1, maxi):
-				' '.join([word, l[j], l[k]])
-				n +=1
-
-	return n
 
 def combs(n, r):
 	return [" ".join(map(str, comb)) for comb in permutations(n, r)]
@@ -133,20 +144,18 @@ def main():
 	# print "L is "+str(L) 
 
 	# print len(word_list)
-	counter = 0
+
 	# get all possible combination candidates for every word in the filtered list
 	for ind, word in enumerate(word_list):
 		comb_list = []
 		j = ind
 		while j < filtered_len:
-
 			candid = word_list[j]
 			comb = word+candid
 			len_comb = len(comb)
 			# plus 1 to account for space
 			if(len_comb+1 <= ANAGRAM_LENGTH):
 				if(exists_in_anam(comb)):
-					counter +=1
 					comb_list.append(candid)
 			# elif(len_comb+1 == ANAGRAM_LENGTH):
 			# 	k += 1
@@ -158,59 +167,79 @@ def main():
 
 	# print possib_dict["stout"]
 
-	print "counter is "+str(counter)
+	# combs = combinations(possib_dict["stout"], 3)
+
+	print len(possib_dict)
 	len_dict = {}
 	for word in word_list:
 		len_dict[word] = len(word)
+	print len(len_dict)
+
+	r = 3
 
 	list_of_l = []
-	build = [" "] * 3
-	for key, candids in possib_dict.items():
-		build[0] = key
-		candids_size = len(candids)
-
-		for i in range(0, candids_size):
-			build[1] = candids[i]
-			for k in range(i+1, candids_size):
-				build[2] = candids[k]
-				phrase_length = len_dict[build[0]] + len_dict[build[1]] + len_dict[build[2]] + 2
-				if(phrase_length == ANAGRAM_LENGTH):
-					if(exists_in_anam("".join(build))):
-						list_of_l += combs(build, 3)
-
-				# elif(phrase_length > ANAGRAM_LENGTH):
-				# 	break
-	# print len(possib_dict[max(possib_dict, key=lambda k: len(possib_dict[k]))])
-	print len(list_of_l)
+	build = [" "] * r
 	
-	for candid in list_of_l:
-		candid_hash = hashlib.md5(candid).hexdigest()
-		if(candid_hash == HASH_EASY):
-			print "THIS IS easy => "+candid
-		elif(candid_hash == HASH_INTERMEDIATE):
-			print "THIS IS intermediate => "+candid
-		elif(candid_hash == HASH_HARD):
-			print "THIS IS very hard => "+candid
+	for key, candids in possib_dict.items():
+		n = len(candids)
+		candids.sort(key=len)
+		if(r > n):
+			continue
+		# indices = range(r-1)
+		# build[0] = key
+		# c = r-1
+
+		init = [""] * r
+		init[0] = key
+
+		recursion(candids, r, init, 1, 0)
+
+		# while(True):
+			# for i in reversed(range(c)):
+			# 	if indices[i] != i + n - c:
+			# 		break
+			# else:
+			# 	break
+
+			# indices[i] += 1
+			# for j in range(i+1, c):
+			# 	indices[j] = indices[j-1] + 1
+
+			# for k, i in enumerate(indices):
+			# 	build[k+1] = candids[i]
+
+			# # print build
+			# phrase_length = len_dict[build[0]] + len_dict[build[1]] + len_dict[build[2]] + 2
+			# if(phrase_length == ANAGRAM_LENGTH+1):
+			# 	if(exists_in_anam("".join(build))):
+			# 		print build
+			# 		list_of_l += combs(build, r)
+
+	
+	# print len(list_of_l)
+		# candids_size = len(candids)
+
+		# for i in range(0, candids_size):
+		# 	build[1] = candids[i]
+		# 	for k in range(i+1, candids_size):
+		# 		build[2] = candids[k]
+		# 		phrase_length = len_dict[build[0]] + len_dict[build[1]] + len_dict[build[2]] + 2
+		# 		if(phrase_length == ANAGRAM_LENGTH):
+		# 			if(exists_in_anam("".join(build))):
+		# 				list_of_l += combs(build, 3)
+
+	# print len(list_of_l)
+	
+	# for candid in list_of_l:
+	# 	candid_hash = hashlib.md5(candid).hexdigest()
+	# 	if(candid_hash == HASH_EASY):
+	# 		print "THIS IS easy => "+candid
+	# 	elif(candid_hash == HASH_INTERMEDIATE):
+	# 		print "THIS IS intermediate => "+candid
+	# 	elif(candid_hash == HASH_HARD):
+	# 		print "THIS IS very hard => "+candid
 
 
-
-		# for key, value in possib_dict.items():
-	# 	value.append(key)
-
-	# i = 0
-
-	# for key, value in possib_dict.items():
-	# 	value.append(key)
-	# 	for cmbos in itertools.combinations(value, 3):
-	# 		i += 1
-
-	# print i
-
-	# print len(possib_dict)
-
-	# combs  = list(itertools.combinations(possib_dict["stout"], 4))
-
-	# print len(combs)
 	
 
 

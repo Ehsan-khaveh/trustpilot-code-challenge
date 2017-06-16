@@ -1,0 +1,28 @@
+python comb indexing with word_list.sort(key=len, reverse=True)
+
+THIS IS very hard => wu lisp not statutory
+         1225540366 function calls in 7673.619 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000 7673.619 7673.619 <string>:1(<module>)
+302624886  644.933    0.000 1049.840    0.000 optimal.py:26(exists_in_anam)
+   150180    2.144    0.000    4.672    0.000 optimal.py:48(combs)
+        1 6577.865 6577.865 7673.619 7673.619 optimal.py:51(main)
+  3604318    1.471    0.000    1.471    0.000 {_hashlib.openssl_md5}
+304005909   18.055    0.000   18.055    0.000 {len}
+  3604320    2.041    0.000    2.041    0.000 {map}
+     1788    0.000    0.000    0.000    0.000 {method 'add' of 'set' objects}
+   340339    0.026    0.000    0.026    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+  3604318    1.658    0.000    1.658    0.000 {method 'hexdigest' of '_hashlib.HASH' objects}
+    99175    0.014    0.000    0.014    0.000 {method 'isalnum' of 'str' objects}
+        1    0.003    0.003    0.003    0.003 {method 'items' of 'dict' objects}
+304779597   38.456    0.000   38.456    0.000 {method 'join' of 'str' objects}
+    99175    0.015    0.000    0.015    0.000 {method 'rstrip' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'sort' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {open}
+     1468    0.003    0.000    0.003    0.000 {range}
+302624886  386.937    0.000  386.937    0.000 {sorted}
+        1    0.000    0.000    0.000    0.000 {sys.exit}
